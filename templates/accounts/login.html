@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block extra_css %}
+<style>
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: radial-gradient(ellipse at 20% 50%, rgba(108,63,255,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.1) 0%, transparent 50%),
+                var(--dark);
+}
+.auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 48px; max-width: 460px; width: 100%; }
+.auth-logo { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.divider { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: .85rem; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card mx-auto">
+                    <div class="text-center mb-4">
+                        <div class="auth-logo mb-2"><i class="bi bi-lightning-charge-fill"></i> MentorHub</div>
+                        <p style="color:var(--text-muted);">Welcome back! Sign in to continue</p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background:var(--surface2);border:1.5px solid var(--border);border-right:none;color:var(--text-muted);border-radius:12px 0 0 12px;"><i class="bi bi-person"></i></span>
+                                <input type="text" name="username" class="form-control" placeholder="Enter username" style="border-left:none;border-radius:0 12px 12px 0;" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background:var(--surface2);border:1.5px solid var(--border);border-right:none;color:var(--text-muted);border-radius:12px 0 0 12px;"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="Enter password" style="border-left:none;border-radius:0 12px 12px 0;" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-3 mb-3">
+                            <i class="bi bi-arrow-right-circle me-2"></i>Sign In
+                        </button>
+                    </form>
+                    <div class="divider my-3">or</div>
+                    <div class="text-center">
+                        <p style="color:var(--text-muted);font-size:.9rem;">Don't have an account?
+                            <a href="{% url 'accounts:signup_choice' %}" style="color:var(--primary-light);font-weight:600;">Create one free</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Mentor Signup{% endblock %}
+{% block extra_css %}
+<style>
+.signup-wrapper { background: radial-gradient(ellipse at 70% 30%, rgba(108,63,255,0.12) 0%, transparent 60%), var(--dark); min-height: 100vh; padding: 40px 0; }
+.signup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 48px; }
+.step-badge { background: var(--gradient); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; margin-right: 12px; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="signup-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="signup-card">
+                    <div class="mb-4">
+                        <a href="{% url 'accounts:signup_choice' %}" style="color:var(--text-muted);text-decoration:none;font-size:.9rem;"><i class="bi bi-arrow-left me-2"></i>Back</a>
+                    </div>
+                    <div class="text-center mb-5">
+                        <div style="width:64px;height:64px;background:rgba(108,63,255,0.15);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:var(--primary-light);margin:0 auto 16px;"><i class="bi bi-person-workspace"></i></div>
+                        <h2 style="font-family:'Syne',sans-serif;font-weight:800;">Create Mentor Account</h2>
+                        <p style="color:var(--text-muted);">Fill in your details to start mentoring</p>
+                    </div>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <h6 style="color:var(--primary-light);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.8rem;margin-bottom:20px;"><span class="step-badge">1</span>Basic Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" placeholder="John" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control" placeholder="johndoe" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Bio</label>
+                                    <textarea name="bio" class="form-control" rows="3" placeholder="Tell mentees about yourself..."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Profile Picture</label>
+                                    <input type="file" name="profile_picture" class="form-control" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="border-color:var(--border);">
+                        <div class="mb-4">
+                            <h6 style="color:var(--primary-light);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.8rem;margin-bottom:20px;"><span class="step-badge">2</span>Professional Details</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Skills <small style="color:var(--text-muted);">(comma-separated)</small></label>
+                                    <input type="text" name="skills" class="form-control" placeholder="Python, Machine Learning, Django, React" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Years of Experience</label>
+                                    <input type="number" name="experience_years" class="form-control" value="0" min="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Hourly Rate (₹)</label>
+                                    <input type="number" name="hourly_rate" class="form-control" value="0" step="0.01" min="0">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Availability</label>
+                                    <input type="text" name="availability" class="form-control" placeholder="e.g. Mon-Fri 6pm-9pm IST">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">LinkedIn URL</label>
+                                    <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">GitHub URL</label>
+                                    <input type="url" name="github_url" class="form-control" placeholder="https://github.com/...">
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="border-color:var(--border);">
+                        <div class="mb-4">
+                            <h6 style="color:var(--primary-light);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.8rem;margin-bottom:20px;"><span class="step-badge">3</span>Security</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="password1" class="form-control" placeholder="Create a password" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" name="password2" class="form-control" placeholder="Confirm password" required>
+                                </div>
+                            </div>
+                        </div>
+                        {% if form.errors %}
+                        <div class="alert alert-danger mb-3">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}<div><i class="bi bi-exclamation-circle me-2"></i>{{ error }}</div>{% endfor %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary w-100 py-3">
+                            <i class="bi bi-person-plus me-2"></i>Create Mentor Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

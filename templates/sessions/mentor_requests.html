@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Session Requests{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:8px;">Session Requests</h2>
+    <p style="color:var(--text-muted);margin-bottom:28px;">Manage incoming and accepted session requests</p>
+
+    <!-- Pending -->
+    <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">Pending Requests</h5>
+            {% if pending %}<span style="background:rgba(245,158,11,.2);color:#fbbf24;border-radius:20px;padding:2px 10px;font-size:.78rem;font-weight:700;">{{ pending.count }}</span>{% endif %}
+        </div>
+        {% if pending %}
+        <div class="row g-3">
+            {% for req in pending %}
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar">{{ req.mentee.first_name.0 }}{{ req.mentee.last_name.0 }}</div>
+                            <div>
+                                <strong>{{ req.mentee.get_full_name }}</strong>
+                                <p class="mb-0" style="color:var(--text-muted);font-size:.82rem;">@{{ req.mentee.username }}</p>
+                            </div>
+                        </div>
+                        <span class="badge-status-pending">Pending</span>
+                    </div>
+                    <div class="mb-3">
+                        <div style="font-weight:600;margin-bottom:4px;">{{ req.topic }}</div>
+                        {% if req.description %}<p style="color:var(--text-muted);font-size:.85rem;margin:0;">{{ req.description|truncatechars:100 }}</p>{% endif %}
+                    </div>
+                    <div class="d-flex gap-3 mb-4" style="font-size:.82rem;color:var(--text-muted);">
+                        <span><i class="bi bi-calendar me-1"></i>{{ req.proposed_date|date:"M d, Y" }}</span>
+                        <span><i class="bi bi-clock me-1"></i>{{ req.proposed_date|date:"g:i A" }}</span>
+                        <span><i class="bi bi-hourglass me-1"></i>{{ req.duration_minutes }} min</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'sessions:accept_request' req.pk %}" class="btn btn-sm flex-grow-1" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:12px;padding:10px;">
+                            <i class="bi bi-check-circle me-1"></i>Accept
+                        </a>
+                        <form method="post" action="{% url 'sessions:reject_request' req.pk %}" class="flex-grow-1">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm w-100" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:10px;">
+                                <i class="bi bi-x-circle me-1"></i>Decline
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card p-4 text-center" style="color:var(--text-muted);">
+            <i class="bi bi-inbox" style="font-size:2.5rem;opacity:.4;"></i>
+            <p class="mt-3 mb-0">No pending requests</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Accepted -->
+    <div class="mb-5">
+        <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px;">Accepted Sessions</h5>
+        {% if accepted %}
+        <div class="card p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Mentee</th><th>Topic</th><th>Date & Time</th><th>Duration</th><th>Action</th></tr></thead>
+                    <tbody>
+                        {% for req in accepted %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar" style="width:36px;height:36px;font-size:.8rem;">{{ req.mentee.first_name.0 }}{{ req.mentee.last_name.0 }}</div>
+                                    <div>
+                                        <div>{{ req.mentee.get_full_name }}</div>
+                                        <small style="color:var(--text-muted);">@{{ req.mentee.username }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ req.topic }}</td>
+                            <td style="color:var(--text-muted);font-size:.85rem;">{{ req.proposed_date|date:"M d, Y g:i A" }}</td>
+                            <td style="color:var(--text-muted);">{{ req.duration_minutes }} min</td>
+                            <td>
+                                {% if req.live_session %}
+                                <a href="{% url 'sessions:video_call' req.live_session.pk %}" class="btn btn-sm" style="background:var(--gradient);color:#fff;border:none;border-radius:12px;padding:8px 16px;">
+                                    <i class="bi bi-camera-video-fill me-1"></i>Start Call
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'chat:chat_with' req.mentee.pk %}" class="btn btn-sm ms-1" style="background:rgba(108,63,255,.15);color:var(--primary-light);border:1px solid var(--border);border-radius:12px;padding:8px 12px;">
+                                    <i class="bi bi-chat-dots"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card p-4 text-center" style="color:var(--text-muted);">
+            <p class="mb-0">No accepted sessions yet</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Completed -->
+    <div>
+        <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px;">Completed Sessions</h5>
+        {% if completed %}
+        <div class="card p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Mentee</th><th>Topic</th><th>Date</th><th>Review</th></tr></thead>
+                    <tbody>
+                        {% for req in completed %}
+                        <tr>
+                            <td>{{ req.mentee.get_full_name }}</td>
+                            <td>{{ req.topic }}</td>
+                            <td style="color:var(--text-muted);font-size:.85rem;">{{ req.proposed_date|date:"M d, Y" }}</td>
+                            <td>
+                                {% if req.review %}
+                                <span style="color:#f59e0b;">
+                                    {% for i in "12345" %}{% if forloop.counter <= req.review.rating %}<i class="bi bi-star-fill" style="font-size:.75rem;"></i>{% endif %}{% endfor %}
+                                    {{ req.review.rating }}/5
+                                </span>
+                                {% else %}
+                                <span style="color:var(--text-muted);font-size:.82rem;">Awaiting review</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card p-4 text-center" style="color:var(--text-muted);"><p class="mb-0">No completed sessions yet</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

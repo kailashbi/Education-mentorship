@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 style="font-family:'Syne',sans-serif;font-weight:800;"><i class="bi bi-shield-check me-2" style="color:var(--primary-light);"></i>Admin Panel</h2>
+            <p style="color:var(--text-muted);">Manage users, sessions, and platform violations</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Total Mentors</div>
+                <div class="stat-number">{{ total_mentors }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Total Mentees</div>
+                <div class="stat-number">{{ total_mentees }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Completed Sessions</div>
+                <div class="stat-number">{{ total_sessions }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Suspended Users</div>
+                <div class="stat-number" style="-webkit-text-fill-color:#f87171;">{{ suspended_users.count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav mb-4" style="border-bottom:1px solid var(--border);" id="adminTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#mentors" style="color:var(--text-muted);">Mentors ({{ total_mentors }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#mentees" style="color:var(--text-muted);">Mentees ({{ total_mentees }})</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#sessions" style="color:var(--text-muted);">Sessions</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#violations" style="color:var(--text-muted);">Violations ({{ suspended_users.count }})</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Mentors -->
+        <div class="tab-pane fade show active" id="mentors">
+            <div class="card p-4">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Mentor</th>
+                                <th>Skills</th>
+                                <th>Sessions</th>
+                                <th>Rating</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mentor in all_mentors %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar" style="width:36px;height:36px;font-size:.8rem;">{{ mentor.first_name.0 }}{{ mentor.last_name.0 }}</div>
+                                        <div>
+                                            <div>{{ mentor.get_full_name }}</div>
+                                            <small style="color:var(--text-muted);">{{ mentor.email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="font-size:.8rem;color:var(--text-muted);">
+                                    {% if mentor.mentor_profile %}{{ mentor.mentor_profile.skills|truncatechars:30 }}{% endif %}
+                                </td>
+                                <td>{% if mentor.mentor_profile %}{{ mentor.mentor_profile.total_sessions }}{% endif %}</td>
+                                <td>
+                                    {% if mentor.mentor_profile %}
+                                    <span style="color:#f59e0b;"><i class="bi bi-star-fill me-1"></i>{{ mentor.mentor_profile.average_rating }}</span>
+                                    {% endif %}
+                                </td>
+                                <td style="font-size:.82rem;color:var(--text-muted);">{{ mentor.date_joined|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if mentor.is_suspended %}
+                                    <span class="badge-status-rejected">Suspended</span>
+                                    {% else %}
+                                    <span class="badge-status-accepted">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'dashboard:suspend_user' mentor.pk %}" class="btn btn-sm {% if mentor.is_suspended %}btn-outline-primary{% else %}btn-outline-danger{% endif %}" style="border-radius:10px;font-size:.78rem;" onclick="return confirm('{% if mentor.is_suspended %}Unsuspend{% else %}Suspend{% endif %} this user?')">
+                                        {% if mentor.is_suspended %}<i class="bi bi-unlock"></i>{% else %}<i class="bi bi-slash-circle"></i>{% endif %}
+                                    </a>
+                                    <a href="{% url 'dashboard:delete_user' mentor.pk %}" class="btn btn-sm ms-1" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:10px;font-size:.78rem;" onclick="return confirm('Delete this user? This cannot be undone.')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mentees -->
+        <div class="tab-pane fade" id="mentees">
+            <div class="card p-4">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr><th>Mentee</th><th>Email</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for mentee in all_mentees %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar" style="width:36px;height:36px;font-size:.8rem;">{{ mentee.first_name.0 }}{{ mentee.last_name.0 }}</div>
+                                        {{ mentee.get_full_name }}
+                                    </div>
+                                </td>
+                                <td style="color:var(--text-muted);font-size:.85rem;">{{ mentee.email }}</td>
+                                <td style="color:var(--text-muted);font-size:.82rem;">{{ mentee.date_joined|date:"M d, Y" }}</td>
+                                <td>{% if mentee.is_suspended %}<span class="badge-status-rejected">Suspended</span>{% else %}<span class="badge-status-accepted">Active</span>{% endif %}</td>
+                                <td>
+                                    <a href="{% url 'dashboard:suspend_user' mentee.pk %}" class="btn btn-sm {% if mentee.is_suspended %}btn-outline-primary{% else %}btn-outline-danger{% endif %}" style="border-radius:10px;font-size:.78rem;" onclick="return confirm('Sure?')">
+                                        {% if mentee.is_suspended %}<i class="bi bi-unlock"></i>{% else %}<i class="bi bi-slash-circle"></i>{% endif %}
+                                    </a>
+                                    <a href="{% url 'dashboard:delete_user' mentee.pk %}" class="btn btn-sm ms-1" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:10px;font-size:.78rem;" onclick="return confirm('Delete?')"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sessions -->
+        <div class="tab-pane fade" id="sessions">
+            <div class="card p-4">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr><th>Mentee</th><th>Mentor</th><th>Topic</th><th>Date</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for session in all_sessions %}
+                            <tr>
+                                <td>{{ session.mentee.get_full_name }}</td>
+                                <td>{{ session.mentor.get_full_name }}</td>
+                                <td style="color:var(--text-muted);font-size:.85rem;">{{ session.topic|truncatechars:30 }}</td>
+                                <td style="color:var(--text-muted);font-size:.82rem;">{{ session.proposed_date|date:"M d, Y" }}</td>
+                                <td><span class="badge-status-{{ session.status }}">{{ session.get_status_display }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Violations -->
+        <div class="tab-pane fade" id="violations">
+            <div class="card p-4">
+                {% if suspended_users %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr><th>User</th><th>Role</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for u in suspended_users %}
+                            <tr>
+                                <td>{{ u.get_full_name }} <small style="color:var(--text-muted);">@{{ u.username }}</small></td>
+                                <td><span class="badge-skill">{{ u.role }}</span></td>
+                                <td>
+                                    <a href="{% url 'dashboard:suspend_user' u.pk %}" class="btn btn-sm btn-outline-primary" style="border-radius:10px;" onclick="return confirm('Unsuspend this user?')"><i class="bi bi-unlock me-1"></i>Unsuspend</a>
+                                    <a href="{% url 'dashboard:delete_user' u.pk %}" class="btn btn-sm ms-1" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:10px;" onclick="return confirm('Permanently delete?')"><i class="bi bi-trash me-1"></i>Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5" style="color:var(--text-muted);">
+                    <i class="bi bi-shield-check" style="font-size:3rem;color:var(--accent2);opacity:.7;"></i>
+                    <p class="mt-3">No violations or suspensions currently. Platform is clean! ✅</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.nav-link.active { color: var(--primary-light) !important; border-bottom: 2px solid var(--primary) !important; }
+</style>
+{% endblock %}

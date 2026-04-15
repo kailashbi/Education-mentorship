@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ mentor.user.get_full_name }}{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'accounts:mentor_list' %}" style="color:var(--text-muted);text-decoration:none;font-size:.9rem;"><i class="bi bi-arrow-left me-2"></i>Back to Mentors</a>
+    <div class="row mt-4 g-4">
+        <div class="col-lg-4">
+            <div class="card p-4 mb-4">
+                <div class="text-center mb-4">
+                    <div class="avatar avatar-xl mx-auto mb-3">
+                        {% if mentor.user.profile_picture %}
+                            <img src="{{ mentor.user.profile_picture.url }}" alt="">
+                        {% else %}
+                            {{ mentor.user.first_name.0|upper }}{{ mentor.user.last_name.0|upper }}
+                        {% endif %}
+                    </div>
+                    <h3 style="font-family:'Syne',sans-serif;font-weight:800;">{{ mentor.user.get_full_name }}</h3>
+                    <p style="color:var(--text-muted);">@{{ mentor.user.username }}</p>
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= mentor.average_rating %}
+                                <i class="bi bi-star-fill" style="color:#f59e0b;"></i>
+                            {% else %}
+                                <i class="bi bi-star" style="color:var(--surface2);"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <strong>{{ mentor.average_rating }}</strong>
+                        <span style="color:var(--text-muted);font-size:.85rem;">({{ mentor.total_reviews }} reviews)</span>
+                    </div>
+                </div>
+                <div class="d-grid gap-2">
+                    {% if user.is_authenticated and user.role == 'mentee' %}
+                    <a href="{% url 'sessions:request_session' mentor.user.pk %}" class="btn btn-primary">
+                        <i class="bi bi-calendar-plus me-2"></i>Request Session
+                    </a>
+                    <a href="{% url 'chat:chat_with' mentor.user.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-chat-dots me-2"></i>Send Message
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card p-4">
+                <h6 style="color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-size:.8rem;margin-bottom:16px;">Details</h6>
+                <div class="d-flex flex-column gap-3" style="font-size:.9rem;">
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--text-muted);"><i class="bi bi-briefcase me-2"></i>Experience</span>
+                        <strong>{{ mentor.experience_years }} years</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--text-muted);"><i class="bi bi-calendar-check me-2"></i>Sessions</span>
+                        <strong>{{ mentor.total_sessions }}</strong>
+                    </div>
+                    {% if mentor.hourly_rate > 0 %}
+                    <div class="d-flex justify-content-between">
+                        <span style="color:var(--text-muted);"><i class="bi bi-currency-rupee me-2"></i>Rate</span>
+                        <strong>₹{{ mentor.hourly_rate }}/hr</strong>
+                    </div>
+                    {% endif %}
+                    {% if mentor.availability %}
+                    <div>
+                        <span style="color:var(--text-muted);"><i class="bi bi-clock me-2"></i>Availability</span>
+                        <p class="mt-1 mb-0" style="font-size:.85rem;">{{ mentor.availability }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if mentor.linkedin_url or mentor.github_url %}
+                <hr style="border-color:var(--border);">
+                <div class="d-flex gap-3 justify-content-center">
+                    {% if mentor.linkedin_url %}
+                    <a href="{{ mentor.linkedin_url }}" target="_blank" style="color:#0a66c2;font-size:1.5rem;"><i class="bi bi-linkedin"></i></a>
+                    {% endif %}
+                    {% if mentor.github_url %}
+                    <a href="{{ mentor.github_url }}" target="_blank" style="color:var(--text);font-size:1.5rem;"><i class="bi bi-github"></i></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card p-4 mb-4">
+                <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px;">About</h5>
+                <p style="color:var(--text-muted);line-height:1.7;">{{ mentor.user.bio|default:"No bio provided." }}</p>
+                <hr style="border-color:var(--border);">
+                <h6 style="font-weight:700;margin-bottom:12px;">Skills & Expertise</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for skill in mentor.get_skills_list %}
+                        <span class="badge-skill">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card p-4">
+                <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:20px;">
+                    Reviews <span style="color:var(--text-muted);font-size:.9rem;font-weight:400;">({{ reviews.count }})</span>
+                </h5>
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <div class="mb-4 pb-4" style="border-bottom:1px solid var(--border);">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="avatar flex-shrink-0">
+                                {% if review.mentee.profile_picture %}
+                                    <img src="{{ review.mentee.profile_picture.url }}" alt="">
+                                {% else %}
+                                    {{ review.mentee.first_name.0|upper }}{{ review.mentee.last_name.0|upper }}
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ review.mentee.get_full_name }}</strong>
+                                        <div class="mt-1">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="bi bi-star-fill" style="color:#f59e0b;font-size:.75rem;"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star" style="color:var(--surface2);font-size:.75rem;"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <small style="color:var(--text-muted);">{{ review.created_at|date:"M d, Y" }}</small>
+                                </div>
+                                {% if review.comment %}
+                                <p style="color:var(--text-muted);font-size:.9rem;margin-top:8px;line-height:1.6;">{{ review.comment }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4" style="color:var(--text-muted);">
+                        <i class="bi bi-chat-square-text" style="font-size:2rem;"></i>
+                        <p class="mt-2">No reviews yet. Be the first!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

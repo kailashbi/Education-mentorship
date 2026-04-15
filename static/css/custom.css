@@ -1,0 +1,68 @@
+/* MentorHub Custom CSS - additional overrides */
+
+/* Smooth transitions globally */
+a { transition: color 0.2s; }
+
+/* Fix Bootstrap tab active state for dark theme */
+.nav-tabs .nav-link {
+    color: var(--text-muted) !important;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 10px 16px;
+    font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+    color: var(--primary-light) !important;
+    border-bottom: 2px solid var(--primary) !important;
+    background: transparent;
+}
+.nav-tabs { border-bottom: 1px solid var(--border); }
+
+/* Input group fix for dark theme */
+.input-group-text {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+}
+
+/* Page fade in */
+main { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Button danger outline */
+.btn-outline-danger {
+    border: 1.5px solid rgba(239,68,68,0.5);
+    color: #f87171;
+    border-radius: 12px;
+    background: transparent;
+}
+.btn-outline-danger:hover {
+    background: rgba(239,68,68,0.15);
+    color: #f87171;
+    border-color: #ef4444;
+}
+
+/* Success button */
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* Table hover */
+.table-hover tbody tr:hover td {
+    background: rgba(108,63,255,0.05);
+}
+
+/* Min width fix */
+.min-w-0 { min-width: 0; }
+
+/* Responsive video grid */
+@media (max-width: 576px) {
+    .video-grid { grid-template-columns: 1fr !important; }
+}
