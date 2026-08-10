@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Find Mentors{% endblock %}
+{% block extra_css %}
+<style>
+.search-hero { background: linear-gradient(135deg, rgba(108,63,255,0.12) 0%, rgba(168,85,247,0.05) 100%); border-bottom: 1px solid var(--border); padding: 48px 0 36px; }
+.search-bar { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 50px; padding: 6px 6px 6px 24px; display: flex; align-items: center; max-width: 700px; margin: 0 auto; }
+.search-bar input { background: transparent; border: none; color: var(--text); flex: 1; font-size: 1rem; outline: none; }
+.search-bar input::placeholder { color: var(--text-muted); }
+.search-bar button { background: var(--gradient); border: none; border-radius: 40px; padding: 10px 24px; color: #fff; font-weight: 600; }
+.skill-pill { background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 16px; border-radius: 20px; font-size: .82rem; cursor: pointer; transition: all .2s; text-decoration: none; display: inline-block; }
+.skill-pill:hover, .skill-pill.active { background: rgba(108,63,255,0.2); border-color: var(--primary); color: var(--primary-light); }
+.mentor-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 28px; transition: all .3s; height: 100%; }
+.mentor-card:hover { border-color: var(--primary); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+.star-filled { color: #f59e0b; }
+.star-empty { color: var(--surface2); }
+</style>
+{% endblock %}
+{% block content %}
+<div class="search-hero">
+    <div class="container">
+        <h1 class="section-title text-center mb-2">Find Your <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Perfect Mentor</span></h1>
+        <p class="text-center mb-4" style="color:var(--text-muted);">Search by name, skill, or expertise</p>
+        <form method="get" action="{% url 'accounts:mentor_list' %}">
+            <div class="search-bar">
+                <i class="bi bi-search me-3" style="color:var(--text-muted);"></i>
+                <input type="text" name="q" value="{{ query }}" placeholder="Search mentors by name or skill...">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+        {% if all_skills %}
+        <div class="text-center mt-4">
+            <a href="{% url 'accounts:mentor_list' %}" class="skill-pill {% if not skill_filter %}active{% endif %} me-2 mb-2">All</a>
+            {% for skill in all_skills %}
+            <a href="?skill={{ skill }}" class="skill-pill {% if skill_filter == skill %}active{% endif %} me-2 mb-2">{{ skill }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p style="color:var(--text-muted);">
+            {% if query or skill_filter %}Results for
+                {% if query %}<strong style="color:var(--text);">"{{ query }}"</strong>{% endif %}
+                {% if skill_filter %} in <strong style="color:var(--primary-light);">{{ skill_filter }}</strong>{% endif %}
+                — {% endif %}<strong style="color:var(--text);">{{ mentors.count }}</strong> mentor{{ mentors.count|pluralize }} found
+        </p>
+        <small style="color:var(--text-muted);"><i class="bi bi-sort-down me-1"></i>Sorted by rating</small>
+    </div>
+
+    {% if mentors %}
+    <div class="row g-4">
+        {% for mentor in mentors %}
+        <div class="col-md-6 col-lg-4">
+            <div class="mentor-card">
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="avatar avatar-lg flex-shrink-0">
+                        {% if mentor.user.profile_picture %}
+                            <img src="{{ mentor.user.profile_picture.url }}" alt="">
+                        {% else %}
+                            {{ mentor.user.first_name.0|upper }}{{ mentor.user.last_name.0|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1 min-w-0">
+                        <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:2px;">{{ mentor.user.get_full_name }}</h5>
+                        <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:6px;">@{{ mentor.user.username }}</p>
+                        <div class="rating-display">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= mentor.average_rating %}
+                                    <i class="bi bi-star-fill star-filled" style="font-size:.75rem;"></i>
+                                {% else %}
+                                    <i class="bi bi-star star-empty" style="font-size:.75rem;"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span style="font-size:.8rem;color:var(--text-muted);margin-left:4px;">{{ mentor.average_rating }} ({{ mentor.total_reviews }})</span>
+                        </div>
+                    </div>
+                </div>
+                {% if mentor.user.bio %}
+                <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;line-height:1.5;">{{ mentor.user.bio|truncatechars:100 }}</p>
+                {% endif %}
+                <div class="mb-3 d-flex flex-wrap gap-1">
+                    {% for skill in mentor.get_skills_list|slice:":4" %}
+                        <span class="badge-skill">{{ skill }}</span>
+                    {% endfor %}
+                    {% if mentor.get_skills_list|length > 4 %}
+                        <span class="badge-skill">+{{ mentor.get_skills_list|length|add:"-4" }} more</span>
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3" style="font-size:.82rem;color:var(--text-muted);">
+                    <span><i class="bi bi-briefcase me-1"></i>{{ mentor.experience_years }} yr{{ mentor.experience_years|pluralize }} exp</span>
+                    <span><i class="bi bi-calendar-check me-1"></i>{{ mentor.total_sessions }} sessions</span>
+                    {% if mentor.hourly_rate > 0 %}<span><i class="bi bi-currency-rupee"></i>{{ mentor.hourly_rate }}/hr</span>{% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'accounts:mentor_detail' mentor.pk %}" class="btn btn-outline-primary flex-grow-1 btn-sm">
+                        <i class="bi bi-person me-1"></i>View Profile
+                    </a>
+                    {% if user.is_authenticated and user.role == 'mentee' %}
+                    <a href="{% url 'sessions:request_session' mentor.user.pk %}" class="btn btn-primary btn-sm px-3">
+                        <i class="bi bi-calendar-plus"></i>
+                    </a>
+                    <a href="{% url 'chat:chat_with' mentor.user.pk %}" class="btn btn-sm px-3" style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:12px;">
+                        <i class="bi bi-chat-dots"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div style="font-size:4rem;margin-bottom:16px;">🔍</div>
+        <h4 style="font-family:'Syne',sans-serif;">No mentors found</h4>
+        <p style="color:var(--text-muted);">Try different keywords or browse all mentors</p>
+        <a href="{% url 'accounts:mentor_list' %}" class="btn btn-primary mt-2">Browse All Mentors</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

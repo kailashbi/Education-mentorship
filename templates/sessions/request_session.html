@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Request Session{% endblock %}
+{% block content %}
+<div class="container" style="max-width:680px;padding-top:20px;">
+    <a href="{% url 'accounts:mentor_list' %}" style="color:var(--text-muted);text-decoration:none;font-size:.9rem;"><i class="bi bi-arrow-left me-2"></i>Back to Mentors</a>
+    <div class="card p-5 mt-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="avatar avatar-lg flex-shrink-0">
+                {% if mentor.profile_picture %}
+                    <img src="{{ mentor.profile_picture.url }}" alt="">
+                {% else %}
+                    {{ mentor.first_name.0 }}{{ mentor.last_name.0 }}
+                {% endif %}
+            </div>
+            <div>
+                <h4 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:4px;">Request Session</h4>
+                <p style="color:var(--text-muted);margin:0;">with <strong style="color:var(--text);">{{ mentor.get_full_name }}</strong></p>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Session Topic <span style="color:#f87171;">*</span></label>
+                <input type="text" name="topic" class="form-control" placeholder="e.g. Python Django REST API development" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Describe what you'd like to learn or discuss in this session..."></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-7">
+                    <label class="form-label">Proposed Date & Time <span style="color:#f87171;">*</span></label>
+                    <input type="datetime-local" name="proposed_date" class="form-control" required>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Duration</label>
+                    <select name="duration" class="form-select">
+                        <option value="30">30 minutes</option>
+                        <option value="60" selected>1 hour</option>
+                        <option value="90">1.5 hours</option>
+                        <option value="120">2 hours</option>
+                    </select>
+                </div>
+            </div>
+            {% if mentor.availability %}
+            <div class="p-3 mb-4" style="background:rgba(108,63,255,.08);border:1px solid var(--border);border-radius:16px;font-size:.88rem;">
+                <i class="bi bi-clock me-2" style="color:var(--primary-light);"></i>
+                <strong>{{ mentor.first_name }}'s Availability:</strong>
+                <span style="color:var(--text-muted);">{{ mentor.availability }}</span>
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary w-100 py-3">
+                <i class="bi bi-send me-2"></i>Send Session Request
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

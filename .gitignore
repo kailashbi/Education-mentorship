@@ -1,0 +1,116 @@
+# ==========================================
+# MentorHub — Git Ignore Rules for Production
+# ==========================================
+
+# 1. Environment Variables & Secrets (Keep .env.example tracked)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+
+# 2. Python & Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+*.egg
+build/
+dist/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# 3. Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# 4. Database & Media Uploads
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+/staticfiles/
+/media/*
+!/media/**/.gitkeep
+!/media/.gitkeep
+
+# 5. Extra Documentation Files (Only track main README.md and docs/)
+README
+README_*.md
+RAZORPAY_SETUP.md
+
+
+# 5. Node / Frontend Dependencies & Build Output
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+frontend/build/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# 6. Local Windows Portable Python Files, Binaries & Database Folders
+bin/
+data/
+python.exe
+pythonw.exe
+python3.dll
+python310.dll
+vcruntime140.dll
+vcruntime140_1.dll
+DLLs/
+Doc/
+include/
+Lib/
+libs/
+Scripts/
+tcl/
+Tools/
+NEWS.txt
+LICENSE-Community.txt
+LICENSE.txt
+THIRD-PARTY-NOTICES
+MPL-2
+{mentor_hub,accounts,sessions,chat,dashboard,static/
+
+
+# 7. Logs & Temporary Files
+*.log
+log/
+logs/
+*.pot
+*.bak
+*.tmp
+*.temp
+
+# 8. IDE & Operating System Artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+.gemini/

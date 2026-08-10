@@ -1,0 +1,369 @@
+/* ==========================================================================
+   MentorHub Design System: Modern Dark Glassmorphism + Neubrutalism Hybrid
+   ========================================================================== */
+
+:root {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Theme Backgrounds */
+  --bg-primary: #090d16;
+  --bg-secondary: #0f172a;
+  --bg-card: rgba(18, 26, 44, 0.75);
+  --bg-card-hover: rgba(26, 37, 62, 0.88);
+  --bg-card-solid: #111a2e;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dark: #0f172a;
+
+  /* Borders & Dividers */
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-border-bold: rgba(255, 255, 255, 0.25);
+  --color-border-dark: #000000;
+
+  /* Vibrant Accents */
+  --neon-lime: #bef264;
+  --neon-cyan: #38bdf8;
+  --neon-purple: #a855f7;
+  --neon-coral: #fb7185;
+  --neon-amber: #fbbf24;
+  --neon-emerald: #34d399;
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(17, 25, 40, 0.75);
+  --glass-bg-subtle: rgba(17, 25, 40, 0.5);
+  --glass-blur: blur(16px);
+  --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Shadows */
+  --shadow-sm: 2px 2px 0px 0px rgba(0, 0, 0, 0.8);
+  --shadow-md: 4px 4px 0px 0px rgba(0, 0, 0, 0.9);
+  --shadow-lg: 6px 6px 0px 0px rgba(0, 0, 0, 0.95);
+  --shadow-glow-cyan: 0 0 20px rgba(56, 189, 248, 0.25);
+  --shadow-glow-purple: 0 0 20px rgba(168, 85, 247, 0.25);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(168, 85, 247, 0.18) 0px, transparent 50%),
+    radial-gradient(at 85% 20%, rgba(56, 189, 248, 0.16) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(190, 242, 100, 0.09) 0px, transparent 50%),
+    radial-gradient(at 80% 85%, rgba(251, 113, 133, 0.12) 0px, transparent 50%),
+    radial-gradient(at 20% 85%, rgba(251, 191, 36, 0.12) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Modern Dark Glass Cards
+   ========================================================================== */
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-bold);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card-static {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Buttons (Neubrutal + Glow)
+   ========================================================================== */
+
+.btn-brutal {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+
+.btn-brutal:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-brutal:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+.btn-lime {
+  background-color: var(--neon-lime);
+  color: #0f172a;
+  border-color: #000000;
+}
+
+.btn-lime:hover {
+  background-color: #d9f99d;
+  box-shadow: 0 0 15px rgba(190, 242, 100, 0.4);
+}
+
+.btn-cyan {
+  background-color: var(--neon-cyan);
+  color: #081528;
+  border-color: #000000;
+}
+
+.btn-cyan:hover {
+  background-color: #7dd3fc;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+.btn-purple {
+  background-color: var(--neon-purple);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-purple:hover {
+  background-color: #c084fc;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.btn-coral {
+  background-color: var(--neon-coral);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-coral:hover {
+  background-color: #fda4af;
+  box-shadow: 0 0 15px rgba(251, 113, 133, 0.4);
+}
+
+.btn-amber {
+  background-color: var(--neon-amber);
+  color: #0f172a;
+  border-color: #000000;
+}
+
+.btn-dark {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-white {
+  background-color: rgba(30, 41, 59, 0.85);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-white:hover {
+  background-color: rgba(51, 65, 85, 0.95);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+
+.brutal-badge {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-lime {
+  background-color: rgba(190, 242, 100, 0.2);
+  color: var(--neon-lime);
+  border-color: rgba(190, 242, 100, 0.4);
+}
+
+.badge-cyan {
+  background-color: rgba(56, 189, 248, 0.2);
+  color: var(--neon-cyan);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.badge-purple {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.badge-coral {
+  background-color: rgba(251, 113, 133, 0.2);
+  color: var(--neon-coral);
+  border-color: rgba(251, 113, 133, 0.4);
+}
+
+.badge-amber {
+  background-color: rgba(251, 191, 36, 0.2);
+  color: var(--neon-amber);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.badge-slate {
+  background-color: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* ==========================================================================
+   Inputs & Forms
+   ========================================================================== */
+
+.brutal-input, .brutal-select, .brutal-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8fafc;
+  background-color: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.brutal-input::placeholder, .brutal-textarea::placeholder {
+  color: #64748b;
+}
+
+.brutal-input:focus, .brutal-select:focus, .brutal-textarea:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+  background-color: rgba(15, 23, 42, 0.95);
+}
+
+.brutal-select option {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Modal Overlay
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 15, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  color: #f8fafc;
+}
+
+/* ==========================================================================
+   Layout Containers
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

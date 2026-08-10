@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Mentee Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 style="font-family:'Syne',sans-serif;font-weight:800;">Welcome back, {{ user.first_name }} 👋</h2>
+            <p style="color:var(--text-muted);">Track your sessions and continue learning</p>
+        </div>
+        <a href="{% url 'accounts:mentor_list' %}" class="btn btn-primary"><i class="bi bi-search me-2"></i>Find Mentors</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Total Sessions</div>
+                <div class="stat-number">{{ my_sessions.count }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Pending Reviews</div>
+                <div class="stat-number" style="-webkit-text-fill-color:{% if pending_reviews %}#f59e0b{% else %}inherit{% endif %};">{{ pending_reviews }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Active Sessions</div>
+                <div class="stat-number" style="-webkit-text-fill-color:#10b981;">{{ active_sessions.count }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Completed</div>
+                <div class="stat-number">{{ my_sessions|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active sessions -->
+    {% if active_sessions %}
+    <div class="card p-4 mb-4" style="border-color:rgba(16,185,129,.4);">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="glow-dot"></span>
+            <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">Live Sessions</h5>
+        </div>
+        {% for session in active_sessions %}
+        <div class="d-flex justify-content-between align-items-center p-3" style="background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:16px;">
+            <div>
+                <strong>Session with {{ session.mentor.get_full_name }}</strong>
+                <p class="mb-0" style="color:var(--text-muted);font-size:.85rem;">{{ session.session_request.topic }}</p>
+            </div>
+            <a href="{% url 'sessions:video_call' session.pk %}" class="btn btn-sm" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:12px;padding:10px 20px;">
+                <i class="bi bi-camera-video-fill me-2"></i>Join Call
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Session history -->
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 style="font-family:'Syne',sans-serif;font-weight:700;">My Sessions</h5>
+            <a href="{% url 'sessions:my_sessions' %}" style="color:var(--primary-light);text-decoration:none;font-size:.9rem;">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        {% if my_sessions %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Mentor</th>
+                        <th>Topic</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in my_sessions %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="avatar" style="width:32px;height:32px;font-size:.75rem;">{{ session.mentor.first_name.0 }}{{ session.mentor.last_name.0 }}</div>
+                                {{ session.mentor.get_full_name }}
+                            </div>
+                        </td>
+                        <td style="color:var(--text-muted);">{{ session.topic|truncatechars:30 }}</td>
+                        <td style="color:var(--text-muted);font-size:.85rem;">{{ session.proposed_date|date:"M d, Y" }}</td>
+                        <td><span class="badge-status-{{ session.status }}">{{ session.get_status_display }}</span></td>
+                        <td>
+                            {% if session.status == 'completed' and not session.review %}
+                            <a href="{% url 'sessions:submit_review' session.pk %}" class="btn btn-sm" style="background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3);border-radius:10px;font-size:.8rem;">
+                                <i class="bi bi-star me-1"></i>Review
+                            </a>
+                            {% elif session.status == 'accepted' %}
+                            {% if session.live_session %}
+                            <a href="{% url 'sessions:video_call' session.live_session.pk %}" class="btn btn-sm" style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:10px;font-size:.8rem;">
+                                <i class="bi bi-camera-video me-1"></i>Join
+                            </a>
+                            {% endif %}
+                            {% elif session.status == 'completed' %}
+                            <span style="color:#10b981;font-size:.85rem;"><i class="bi bi-check-circle me-1"></i>Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5" style="color:var(--text-muted);">
+            <i class="bi bi-calendar-x" style="font-size:3rem;opacity:.4;"></i>
+            <p class="mt-3">No sessions yet. <a href="{% url 'accounts:mentor_list' %}" style="color:var(--primary-light);">Find a mentor</a> to get started!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

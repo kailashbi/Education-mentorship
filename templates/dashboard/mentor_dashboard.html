@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Mentor Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 style="font-family:'Syne',sans-serif;font-weight:800;">Welcome, {{ user.first_name }} 🎯</h2>
+            <p style="color:var(--text-muted);">Manage your sessions and connect with mentees</p>
+        </div>
+        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-primary"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Pending Requests</div>
+                <div class="stat-number" style="-webkit-text-fill-color:{% if pending_count %}#fbbf24{% else %}inherit{% endif %};">{{ pending_count }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Total Sessions</div>
+                <div class="stat-number">{{ total_sessions }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Avg Rating</div>
+                <div class="stat-number" style="-webkit-text-fill-color:#f59e0b;">
+                    {% if mentor_profile %}{{ mentor_profile.average_rating }}{% else %}0{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="color:var(--text-muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Active Now</div>
+                <div class="stat-number" style="-webkit-text-fill-color:#10b981;">{{ active_sessions.count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active sessions -->
+    {% if active_sessions %}
+    <div class="card p-4 mb-4" style="border-color:rgba(16,185,129,.4);">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="glow-dot"></span>
+            <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">Live Now</h5>
+        </div>
+        {% for session in active_sessions %}
+        <div class="d-flex justify-content-between align-items-center p-3" style="background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:16px;">
+            <div>
+                <strong>{{ session.mentee.get_full_name }}</strong>
+                <p class="mb-0" style="color:var(--text-muted);font-size:.85rem;">{{ session.session_request.topic }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'sessions:video_call' session.pk %}" class="btn btn-sm" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:12px;">
+                    <i class="bi bi-camera-video-fill me-1"></i>Rejoin
+                </a>
+                <a href="{% url 'sessions:end_call' session.pk %}" class="btn btn-sm" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:12px;">
+                    <i class="bi bi-telephone-x"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Upcoming sessions -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="font-family:'Syne',sans-serif;font-weight:700;">Upcoming Sessions</h5>
+                    <a href="{% url 'sessions:mentor_requests' %}" style="color:var(--primary-light);text-decoration:none;font-size:.9rem;">Manage all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                {% if upcoming %}
+                {% for session in upcoming %}
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3" style="background:var(--surface2);border-radius:16px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar">{{ session.mentee.first_name.0 }}{{ session.mentee.last_name.0 }}</div>
+                        <div>
+                            <strong>{{ session.mentee.get_full_name }}</strong>
+                            <p class="mb-0" style="color:var(--text-muted);font-size:.82rem;">{{ session.topic }}</p>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div style="font-size:.82rem;color:var(--text-muted);">{{ session.proposed_date|date:"M d" }}</div>
+                        <div style="font-size:.78rem;color:var(--primary-light);">{{ session.proposed_date|date:"g:i A" }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4" style="color:var(--text-muted);">
+                    <i class="bi bi-calendar" style="font-size:2rem;opacity:.4;"></i>
+                    <p class="mt-2 mb-0">No upcoming sessions</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Recent reviews -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h5 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:16px;">Recent Reviews</h5>
+                {% if recent_reviews %}
+                {% for review in recent_reviews %}
+                <div class="mb-3 pb-3" style="border-bottom:1px solid var(--border);">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <strong style="font-size:.9rem;">{{ review.mentee.get_full_name }}</strong>
+                        <div>
+                            {% for i in "12345" %}
+                                <i class="bi bi-star{% if forloop.counter <= review.rating %}-fill{% endif %}" style="color:{% if forloop.counter <= review.rating %}#f59e0b{% else %}var(--surface2){% endif %};font-size:.7rem;"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if review.comment %}
+                    <p style="color:var(--text-muted);font-size:.82rem;margin-top:4px;margin-bottom:0;">{{ review.comment|truncatechars:80 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4" style="color:var(--text-muted);">
+                    <i class="bi bi-star" style="font-size:2rem;opacity:.4;"></i>
+                    <p class="mt-2 mb-0">No reviews yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

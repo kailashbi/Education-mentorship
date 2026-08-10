@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Choose Account Type{% endblock %}
+{% block extra_css %}
+<style>
+.role-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 28px;
+    padding: 48px 36px;
+    text-align: center;
+    transition: all 0.4s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.role-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-8px);
+    box-shadow: 0 24px 60px rgba(108,63,255,0.25);
+    color: inherit;
+}
+.role-icon {
+    width: 80px; height: 80px;
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    margin: 0 auto 24px;
+}
+.role-card.mentor-card-choice .role-icon { background: rgba(108,63,255,0.15); color: var(--primary-light); }
+.role-card.mentee-card-choice .role-icon { background: rgba(16,185,129,0.15); color: #10b981; }
+.choice-wrapper {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    background: radial-gradient(ellipse at 30% 50%, rgba(108,63,255,0.12) 0%, transparent 60%), var(--dark);
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="choice-wrapper">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="section-title mb-3">Join <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">MentorHub</span></h1>
+            <p style="color:var(--text-muted);font-size:1.1rem;">Choose how you want to participate</p>
+        </div>
+        <div class="row justify-content-center g-4">
+            <div class="col-md-5">
+                <a href="{% url 'accounts:mentor_signup' %}" class="role-card mentor-card-choice">
+                    <div class="role-icon"><i class="bi bi-person-workspace"></i></div>
+                    <h3 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:12px;">I'm a Mentor</h3>
+                    <p style="color:var(--text-muted);margin-bottom:24px;">Share your expertise, guide learners, conduct live sessions and earn recognition.</p>
+                    <ul style="list-style:none;padding:0;text-align:left;color:var(--text-muted);font-size:.9rem;">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Host live 1-on-1 video sessions</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Manage your availability</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Build your reputation with reviews</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Chat & share notes with mentees</li>
+                    </ul>
+                </a>
+            </div>
+            <div class="col-md-5">
+                <a href="{% url 'accounts:mentee_signup' %}" class="role-card mentee-card-choice">
+                    <div class="role-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                    <h3 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:12px;">I'm a Mentee</h3>
+                    <p style="color:var(--text-muted);margin-bottom:24px;">Learn from experts, request sessions and grow your skills with personalized guidance.</p>
+                    <ul style="list-style:none;padding:0;text-align:left;color:var(--text-muted);font-size:.9rem;">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Search mentors by skill</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Request live video sessions</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Rate and review your mentors</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Access chat & shared notes</li>
+                    </ul>
+                </a>
+            </div>
+        </div>
+        <p class="text-center mt-4" style="color:var(--text-muted);">Already have an account? <a href="{% url 'accounts:login' %}" style="color:var(--primary-light);font-weight:600;">Sign in</a></p>
+    </div>
+</div>
+{% endblock %}

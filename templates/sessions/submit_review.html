@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Rate Your Session{% endblock %}
+{% block content %}
+<div class="container" style="max-width:560px;padding-top:40px;">
+    <div class="card p-5">
+        <div class="text-center mb-4">
+            <div style="font-size:3rem;margin-bottom:12px;">⭐</div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:800;">Rate Your Session</h3>
+            <p style="color:var(--text-muted);">Session with <strong style="color:var(--text);">{{ session.mentor.get_full_name }}</strong></p>
+            <p style="color:var(--text-muted);font-size:.85rem;">Topic: {{ session.topic }}</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label text-center d-block mb-3">How would you rate this session?</label>
+                <div class="d-flex justify-content-center gap-3" id="star-rating">
+                    {% for i in "12345" %}
+                    <label style="cursor:pointer;font-size:2.5rem;color:var(--surface2);transition:color .1s;" data-val="{{ forloop.counter }}">
+                        <input type="radio" name="rating" value="{{ forloop.counter }}" style="display:none;" {% if forloop.counter == 5 %}checked{% endif %}>
+                        ★
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Share your experience <small style="color:var(--text-muted);">(optional)</small></label>
+                <textarea name="comment" class="form-control" rows="4" placeholder="What did you learn? Was the mentor helpful and clear?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-3">
+                <i class="bi bi-star-fill me-2"></i>Submit Review
+            </button>
+            <a href="{% url 'dashboard:mentee_dashboard' %}" class="btn btn-link w-100 mt-2" style="color:var(--text-muted);">Skip for now</a>
+        </form>
+    </div>
+</div>
+<script>
+const labels = document.querySelectorAll('#star-rating label');
+labels.forEach((label, idx) => {
+    label.addEventListener('mouseover', () => {
+        labels.forEach((l, i) => l.style.color = i <= idx ? '#f59e0b' : 'var(--surface2)');
+    });
+    label.addEventListener('mouseout', updateStars);
+    label.addEventListener('click', () => {
+        label.querySelector('input').checked = true;
+        updateStars();
+    });
+});
+function updateStars() {
+    const checked = document.querySelector('#star-rating input:checked');
+    const val = checked ? parseInt(checked.value) : 5;
+    labels.forEach((l, i) => l.style.color = i < val ? '#f59e0b' : 'var(--surface2)');
+}
+updateStars();
+</script>
+{% endblock %}
