@@ -114,3 +114,106 @@ flowchart TD
     L -->|Report User| P[Admin Chat Inspector]
     P -->|Issue Warning| Q[Real-Time Notification Bell]
     P -->|Suspend Account| R[Login Allowed, Chat & Booking Blocked]
+```
+## 📁 Folder Structure
+
+```text
+Education-mentorship/
+│
+├── mentor_hub/                       # Django Backend
+│   ├── accounts/                     # Authentication, Profiles, Notifications & Reports
+│   │   ├── management/
+│   │   │   └── commands/             # Custom Django management commands
+│   │   │       └── seed_demo_data.py
+│   │   ├── migrations/               # Database migrations
+│   │   ├── api_views.py              # Authentication, Registration, Reports & Notifications APIs
+│   │   ├── models.py                 # User, MentorProfile, MenteeProfile, UserReport, Notification
+│   │   ├── serializers.py            # Account-related API serializers
+│   │   ├── urls.py                    # Account URL routes
+│   │   └── urls_api.py               # Account REST API routes
+│   │
+│   ├── chat/                         # Real-Time Chat, Notes & PDF Export
+│   │   ├── migrations/               # Chat database migrations
+│   │   ├── api_views.py              # Chat listing, messaging & PDF export APIs
+│   │   ├── models.py                 # ChatRoom, Message
+│   │   ├── serializers.py            # Chat API serializers
+│   │   └── urls_api.py               # Chat API routes
+│   │
+│   ├── dashboard/                    # Admin Dashboard, Analytics & Moderation
+│   │   ├── migrations/               # Dashboard database migrations
+│   │   ├── api_views.py              # Mentor approval, rejection, statistics & moderation
+│   │   ├── models.py                 # Dashboard-related models
+│   │   ├── serializers.py            # Dashboard API serializers
+│   │   └── urls_api.py               # Admin dashboard API routes
+│   │
+│   ├── sessions_app/                 # Sessions, Payments & WebRTC Signaling
+│   │   ├── migrations/               # Session database migrations
+│   │   ├── api_views.py              # Booking, Razorpay & WebRTC signaling APIs
+│   │   ├── models.py                 # SessionRequest, MentorshipSubscription,
+│   │   │                              # LiveSession, Review
+│   │   ├── serializers.py            # Session API serializers
+│   │   ├── razorpay_service.py       # Razorpay HMAC-SHA256 payment verification
+│   │   └── urls_api.py               # Session API routes
+│   │
+│   ├── mentor_hub/                   # Django Project Configuration
+│   │   ├── settings.py               # Django settings & environment configuration
+│   │   ├── urls.py                   # Main URL configuration
+│   │   ├── wsgi.py                   # WSGI application
+│   │   └── asgi.py                   # ASGI application
+│   │
+│   ├── static/                       # Backend static assets
+│   ├── media/                        # Uploaded media & user files
+│   ├── manage.py                      # Django CLI
+│   ├── requirements.txt              # Python production dependencies
+│   ├── Procfile                      # Gunicorn process configuration
+│   ├── build.sh                      # Render build script
+│   └── render.yaml                   # Render deployment configuration
+│
+├── frontend/                         # React 18 + Vite Frontend
+│   ├── public/                       # Public static assets
+│   │
+│   ├── src/
+│   │   ├── api/                      # Axios API clients
+│   │   │   ├── auth.js               # Authentication APIs
+│   │   │   ├── chat.js               # Chat APIs
+│   │   │   ├── admin.js              # Admin APIs
+│   │   │   └── sessions.js            # Session & payment APIs
+│   │   │
+│   │   ├── components/               # Reusable UI components
+│   │   │   ├── Navbar/
+│   │   │   ├── NotificationDropdown/
+│   │   │   ├── Modals/
+│   │   │   └── ProtectedRoute/
+│   │   │
+│   │   ├── context/                  # Global React state
+│   │   │   └── AuthContext.jsx        # JWT authentication & user state
+│   │   │
+│   │   ├── pages/                    # Application pages
+│   │   │   ├── Landing/
+│   │   │   ├── Mentors/
+│   │   │   ├── MentorProfile/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Chat/
+│   │   │   ├── Call/
+│   │   │   └── Admin/
+│   │   │
+│   │   ├── assets/                   # Images, icons & frontend assets
+│   │   ├── App.jsx                   # Main React application
+│   │   ├── main.jsx                  # React application entry point
+│   │   └── index.css                 # Global Neo-Brutalist/Glassmorphism theme
+│   │
+│   ├── package.json                  # Frontend dependencies & scripts
+│   ├── package-lock.json             # Locked dependency versions
+│   ├── vite.config.js                # Vite configuration
+│   └── vercel.json                   # Vercel SPA routing configuration
+│
+├── docs/                             # Technical Documentation
+│   ├── ARCHITECTURE_AND_TECHSTACK.md # Architecture & technology documentation
+│   └── DEPLOYMENT_GUIDE.md           # Deployment configuration & instructions
+│
+├── .env                              # Local environment variables
+├── .gitignore                        # Git ignored files & secrets
+├── README.md                         # Main project documentation
+└── LICENSE                           # Project license
+
+
