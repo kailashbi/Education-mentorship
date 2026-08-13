@@ -2,18 +2,7 @@
 
 Welcome to the official documentation folder for **MentorHub** — the full-stack 1-on-1 mentorship, career coaching, WebRTC video calling, and marketplace platform.
 
----
 
-## 📁 Available Documentation Files
-
-| Document | Description |
-| :--- | :--- |
-| 📖 [**Architecture & Tech Stack (`ARCHITECTURE_AND_TECHSTACK.md`)**](./ARCHITECTURE_AND_TECHSTACK.md) | In-depth breakdown of the entire technology stack (React 18, Vite, Django REST Framework, WebRTC, Razorpay, ReportLab), end-to-end user workflows, page routing hierarchy, critical code implementations (dual signaling relay, track replacement screen sharing, canvas waveforms), and the complete repository folder structure. |
-| 🚀 [**Production Deployment Guide (`DEPLOYMENT_GUIDE.md`)**](./DEPLOYMENT_GUIDE.md) | Complete step-by-step instructions for deploying the Frontend on **Vercel** and Backend + SQLite on **Render**, setting and updating secret environment keys, configuring CORS, setting up persistent disks, and running seed commands. |
-| 📤 [**GitHub Push & Deploy Guide (`GIT_PUSH_AND_DEPLOY_GUIDE.md`)**](./GIT_PUSH_AND_DEPLOY_GUIDE.md) | Foolproof terminal commands to stage, commit, and push your code to GitHub for instant automated deployments on Vercel and Render. |
-
-
----
 
 ## ⚡ Quick Start Reference
 
