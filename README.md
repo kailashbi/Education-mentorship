@@ -207,9 +207,9 @@ Education-mentorship/
 │   ├── vite.config.js                # Vite configuration
 │   └── vercel.json                   # Vercel SPA routing configuration
 │
-├── docs/                             # Technical Documentation
-│   ├── ARCHITECTURE_AND_TECHSTACK.md # Architecture & technology documentation
-│   └── DEPLOYMENT_GUIDE.md           # Deployment configuration & instructions
+├── docs/                             # Functional Requirements & Non-Functional Requirements
+│   ├── SRS complete requirements & DFD 
+│   └──UML.pdf          
 │
 ├── .env                              # Local environment variables
 ├── .gitignore                        # Git ignored files & secrets
